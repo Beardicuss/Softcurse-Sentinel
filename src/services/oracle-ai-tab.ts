@@ -22,6 +22,40 @@ import {
   isOracleProviderReady,
   type OracleProviderId,
 } from '@/services/oracle-ai-settings';
+import { setSecretValue, getRuntimeConfigSnapshot } from '@/services/runtime-config';
+import { isDesktopRuntime } from '@/services/runtime';
+
+// ─── Sentinel key row renderer ────────────────────────────────────────────────
+
+function renderSentinelKeyRow(key: string, label: string, helpText: string, placeholder: string): string {
+  let currentVal = '';
+  try {
+    const snap = getRuntimeConfigSnapshot();
+    const secrets = snap.secrets as Record<string, { value: string } | undefined>;
+    currentVal = secrets[key]?.value ?? '';
+  } catch { /* ignore */ }
+
+  return `
+    <div class="oracle-input-group" style="margin-bottom:8px;">
+      <label class="oracle-input-label">${escapeHtml(label)}</label>
+      <div class="oracle-input-row">
+        <input
+          class="oracle-input${currentVal ? ' valid' : ''}"
+          data-sentinel-key="${escapeHtml(key)}"
+          type="password"
+          placeholder="${escapeHtml(placeholder)}"
+          value="${escapeHtml(currentVal)}"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="oracle-toggle-btn" data-sentinel-toggle="${escapeHtml(key)}" title="Show/hide">
+          ${EYE_SVG}
+        </button>
+      </div>
+      <div style="font-size:9px;color:var(--color-text-muted,#555);margin-top:3px;">${escapeHtml(helpText)}</div>
+    </div>
+  `;
+}
 
 // ─── SVG icons ────────────────────────────────────────────────────────────────
 
@@ -445,6 +479,22 @@ function renderTabContent(container: HTMLElement): void {
         Upgrade to Claude or GPT-4o anytime for deeper reasoning.
       </div>
 
+      <!-- Sentinel Data API Keys -->
+      <div class="oracle-sentinel-keys">
+        <div class="oracle-section-title" style="padding:12px 18px 6px;border-top:1px solid var(--color-border,#1a1a1a);">
+          Sentinel Data Sources — API Keys
+        </div>
+        <div class="oracle-config-area" style="padding-top:4px;">
+          ${renderSentinelKeyRow('FRED_API_KEY', 'FRED (Economic Indicators)', 'Free key — fred.stlouisfed.org/docs/api/api_key.html', 'Your FRED API key...')}
+          ${renderSentinelKeyRow('EIA_API_KEY', 'EIA (Oil & Energy)', 'Free key — eia.gov/opendata/register.php', 'Your EIA API key...')}
+          ${renderSentinelKeyRow('FINNHUB_API_KEY', 'Finnhub (Stock Markets)', 'Free key — finnhub.io/register', 'Your Finnhub API key...')}
+          <div class="oracle-save-row" style="margin-top:4px;">
+            <span class="oracle-save-status" id="sentinel-save-status">${CHECK_SVG} Saved</span>
+            <button class="oracle-save-btn" id="sentinel-keys-save-btn">Save API Keys</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   `;
 
@@ -523,6 +573,82 @@ function attachHandlers(container: HTMLElement): void {
 
     // Re-render master toggle status badge
     renderTabContent(container);
+  });
+
+  // ── Sentinel API Keys: show/hide toggles ──
+  container.querySelectorAll<HTMLButtonElement>('[data-sentinel-toggle]').forEach(btn => {
+    let visible = false;
+    btn.addEventListener('click', () => {
+      visible = !visible;
+      const key = btn.dataset.sentinelToggle!;
+      const input = container.querySelector<HTMLInputElement>(`[data-sentinel-key="${key}"]`);
+      if (input) input.type = visible ? 'text' : 'password';
+      btn.innerHTML = visible ? EYE_OFF_SVG : EYE_SVG;
+    });
+  });
+
+  // ── Sentinel API Keys: live validation ──
+  container.querySelectorAll<HTMLInputElement>('[data-sentinel-key]').forEach(input => {
+    input.addEventListener('input', () => {
+      if (input.value.trim().length > 8) {
+        input.classList.add('valid');
+      } else {
+        input.classList.remove('valid');
+      }
+    });
+  });
+
+  // ── Sentinel API Keys: save button ──
+  const sentinelSaveBtn = container.querySelector<HTMLButtonElement>('#sentinel-keys-save-btn');
+  const sentinelSaveStatus = container.querySelector<HTMLElement>('#sentinel-save-status');
+
+  sentinelSaveBtn?.addEventListener('click', async () => {
+    const inputs = container.querySelectorAll<HTMLInputElement>('[data-sentinel-key]');
+    let savedCount = 0;
+
+    if (!isDesktopRuntime()) {
+      // Web/dev mode: store in localStorage as fallback
+      inputs.forEach(input => {
+        const key = input.dataset.sentinelKey!;
+        const val = input.value.trim();
+        if (val) {
+          try {
+            localStorage.setItem(`wm-secret-${key}`, val);
+            // Also push to sidecar if available
+            fetch('/api/local-env-update', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ key, value: val }),
+            }).catch(() => {});
+            savedCount++;
+          } catch { /* ignore */ }
+        }
+      });
+    } else {
+      // Desktop mode: use proper keychain
+      for (const input of Array.from(inputs)) {
+        const key = input.dataset.sentinelKey!;
+        const val = input.value.trim();
+        if (val) {
+          try {
+            await setSecretValue(key as any, val);
+            savedCount++;
+          } catch (e) {
+            console.warn(`[Oracle Settings] Failed to save ${key}:`, e);
+          }
+        }
+      }
+    }
+
+    // Show saved feedback
+    if (sentinelSaveStatus) {
+      sentinelSaveStatus.textContent = `${CHECK_SVG} Saved ${savedCount} key${savedCount !== 1 ? 's' : ''}`;
+      sentinelSaveStatus.classList.add('visible');
+      setTimeout(() => sentinelSaveStatus.classList.remove('visible'), 2500);
+    }
+
+    // Notify app to reload secrets
+    window.dispatchEvent(new Event('storage'));
   });
 }
 

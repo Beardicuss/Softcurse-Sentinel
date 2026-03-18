@@ -39,69 +39,50 @@ function injectStyles(): void {
   const el = document.createElement('style');
   el.id = STYLE_ID;
   el.textContent = `
-
-  /* ── Oracle Panel Base ── */
-  .oracle-panel-wrap {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: linear-gradient(180deg, #0a0f1a 0%, #080d16 100%);
-    position: relative;
-    overflow: hidden;
+  /* ── Oracle panel base ── */
+  .oracle-panel-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,212,255,0.15) transparent;
   }
-
-  /* Subtle scanline overlay */
-  .oracle-panel-wrap::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0, 212, 255, 0.015) 2px,
-      rgba(0, 212, 255, 0.015) 4px
-    );
-    pointer-events: none;
-    z-index: 0;
-  }
+  .oracle-panel-content::-webkit-scrollbar { width: 3px; }
+  .oracle-panel-content::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); }
 
   /* ── Zone tabs ── */
   .oracle-zones {
     display: flex;
     gap: 4px;
-    padding: 8px 10px 6px;
+    padding: 8px 10px 7px;
     flex-wrap: wrap;
-    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
-    background: rgba(0, 212, 255, 0.03);
-    position: relative;
-    z-index: 1;
+    border-bottom: 1px solid rgba(0,212,255,0.08);
+    background: rgba(0,0,0,0.3);
+    flex-shrink: 0;
   }
   .oracle-zone-btn {
-    padding: 3px 11px;
+    padding: 4px 12px;
     border-radius: 3px;
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    border: 1px solid rgba(255,255,255,0.08);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.07);
     background: rgba(255,255,255,0.03);
-    color: #4a5568;
+    color: #3a4a5a;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-    text-transform: uppercase;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
   }
   .oracle-zone-btn:hover {
-    border-color: rgba(0, 212, 255, 0.5);
+    border-color: rgba(0,212,255,0.45);
     color: #00d4ff;
-    background: rgba(0, 212, 255, 0.08);
-    box-shadow: 0 0 8px rgba(0, 212, 255, 0.15);
+    background: rgba(0,212,255,0.07);
+    box-shadow: 0 0 10px rgba(0,212,255,0.12);
   }
   .oracle-zone-btn.active {
-    background: rgba(0, 212, 255, 0.15);
-    border-color: #00d4ff;
+    background: rgba(0,212,255,0.12);
+    border-color: rgba(0,212,255,0.6);
     color: #00d4ff;
-    box-shadow: 0 0 12px rgba(0, 212, 255, 0.2), inset 0 0 8px rgba(0, 212, 255, 0.05);
+    box-shadow: 0 0 14px rgba(0,212,255,0.18), inset 0 0 6px rgba(0,212,255,0.06);
   }
 
   /* ── No-key state ── */
@@ -110,32 +91,16 @@ function injectStyles(): void {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 14px;
     padding: 40px 24px;
     text-align: center;
-    position: relative;
-    z-index: 1;
   }
-  .oracle-no-key-icon {
-    font-size: 40px;
-    opacity: 0.3;
-    filter: drop-shadow(0 0 20px rgba(0,212,255,0.3));
-  }
-  .oracle-no-key-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #a0aec0;
-    letter-spacing: 0.5px;
-  }
-  .oracle-no-key-desc {
-    font-size: 11px;
-    color: #4a5568;
-    line-height: 1.6;
-    max-width: 260px;
-  }
+  .oracle-no-key-icon { font-size: 42px; opacity: 0.25; }
+  .oracle-no-key-title { font-size: 13px; font-weight: 700; color: #6a7a8a; letter-spacing: 0.5px; }
+  .oracle-no-key-desc { font-size: 11px; color: #3a4a5a; line-height: 1.6; max-width: 260px; }
   .oracle-no-key-btn {
-    padding: 8px 20px;
-    border-radius: 4px;
+    padding: 9px 22px;
+    border-radius: 3px;
     background: linear-gradient(135deg, #00d4ff, #0099cc);
     color: #000;
     font-size: 11px;
@@ -143,193 +108,160 @@ function injectStyles(): void {
     border: none;
     cursor: pointer;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 18px rgba(0,212,255,0.35);
     transition: all 0.2s;
+    font-family: monospace;
   }
-  .oracle-no-key-btn:hover {
-    box-shadow: 0 4px 25px rgba(0, 212, 255, 0.5);
-    transform: translateY(-1px);
-  }
+  .oracle-no-key-btn:hover { box-shadow: 0 4px 28px rgba(0,212,255,0.55); transform: translateY(-1px); }
 
   /* ── Status bar ── */
   .oracle-status-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 10px;
-    background: rgba(0,0,0,0.3);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 5px 12px;
+    background: rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
     font-size: 10px;
-    position: relative;
-    z-index: 1;
+    flex-shrink: 0;
   }
-  .oracle-status-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .oracle-status-left { display: flex; align-items: center; gap: 7px; }
   .oracle-provider-pill {
     padding: 2px 8px;
     border-radius: 2px;
-    background: rgba(74, 222, 128, 0.1);
-    border: 1px solid rgba(74, 222, 128, 0.3);
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.25);
     color: #4ade80;
     font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
+    font-family: monospace;
   }
   .oracle-provider-pill.no-key {
-    background: rgba(251, 146, 60, 0.1);
-    border-color: rgba(251, 146, 60, 0.3);
+    background: rgba(251,146,60,0.08);
+    border-color: rgba(251,146,60,0.25);
     color: #fb923c;
   }
   .oracle-model-label {
-    color: #2d3748;
+    color: #2a3a4a;
     font-size: 9px;
-    max-width: 160px;
+    max-width: 170px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-family: monospace;
   }
-  .oracle-duration {
-    color: #2d3748;
-    font-size: 9px;
-    font-family: monospace;
-  }
+  .oracle-duration { color: #2a3a4a; font-size: 9px; font-family: monospace; }
 
   /* ── Scan bar ── */
   .oracle-scan-bar {
     display: flex;
-    gap: 6px;
-    padding: 7px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    gap: 7px;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
     align-items: center;
-    background: rgba(0,0,0,0.2);
-    position: relative;
-    z-index: 1;
+    background: rgba(0,0,0,0.25);
+    flex-shrink: 0;
   }
   .oracle-scan-btn {
-    padding: 6px 16px;
+    padding: 7px 18px;
     border-radius: 3px;
-    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,153,204,0.1));
+    background: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(0,153,204,0.08));
     color: #00d4ff;
     font-size: 11px;
     font-weight: 800;
-    border: 1px solid rgba(0,212,255,0.4);
+    border: 1px solid rgba(0,212,255,0.35);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     white-space: nowrap;
     letter-spacing: 0.5px;
-    box-shadow: 0 0 10px rgba(0,212,255,0.1);
+    font-family: monospace;
+    box-shadow: 0 0 12px rgba(0,212,255,0.08);
   }
   .oracle-scan-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(0,212,255,0.25), rgba(0,153,204,0.2));
-    box-shadow: 0 0 20px rgba(0,212,255,0.25);
-    border-color: rgba(0,212,255,0.7);
+    background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(0,153,204,0.15));
+    box-shadow: 0 0 22px rgba(0,212,255,0.22);
+    border-color: rgba(0,212,255,0.65);
+    transform: translateY(-1px);
   }
-  .oracle-scan-btn:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
+  .oracle-scan-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
   .oracle-scan-btn.scanning {
-    background: rgba(74, 222, 128, 0.08);
+    background: rgba(74,222,128,0.07);
     color: #4ade80;
-    border-color: rgba(74, 222, 128, 0.3);
-    box-shadow: 0 0 12px rgba(74, 222, 128, 0.1);
-    animation: oracle-pulse-border 1.5s ease-in-out infinite;
+    border-color: rgba(74,222,128,0.3);
+    animation: oracle-glow-pulse 2s ease-in-out infinite;
   }
-  @keyframes oracle-pulse-border {
-    0%, 100% { box-shadow: 0 0 8px rgba(74,222,128,0.1); }
-    50% { box-shadow: 0 0 20px rgba(74,222,128,0.3); }
+  @keyframes oracle-glow-pulse {
+    0%,100% { box-shadow: 0 0 8px rgba(74,222,128,0.1); }
+    50% { box-shadow: 0 0 22px rgba(74,222,128,0.28); }
   }
   .oracle-abort-btn {
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 3px;
-    background: rgba(248, 113, 113, 0.08);
-    border: 1px solid rgba(248, 113, 113, 0.3);
+    background: rgba(248,113,113,0.07);
+    border: 1px solid rgba(248,113,113,0.25);
     color: #f87171;
     font-size: 10px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
-  }
-  .oracle-abort-btn:hover {
-    background: rgba(248, 113, 113, 0.15);
-    border-color: rgba(248, 113, 113, 0.6);
-  }
-  .oracle-scan-cooldown {
-    font-size: 9px;
-    color: #2d3748;
     font-family: monospace;
-    margin-left: 4px;
   }
+  .oracle-abort-btn:hover { background: rgba(248,113,113,0.14); border-color: rgba(248,113,113,0.5); }
+  .oracle-scan-cooldown { font-size: 9px; color: #1e2a35; font-family: monospace; margin-left: 2px; }
 
   /* ── Output area ── */
   .oracle-output {
     flex: 1;
-    padding: 12px 14px 6px;
+    padding: 14px 14px 6px;
     overflow-y: auto;
-    min-height: 120px;
-    position: relative;
-    z-index: 1;
+    min-height: 100px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0,212,255,0.2) transparent;
+    scrollbar-color: rgba(0,212,255,0.15) transparent;
   }
   .oracle-output::-webkit-scrollbar { width: 3px; }
   .oracle-output::-webkit-scrollbar-track { background: transparent; }
-  .oracle-output::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 2px; }
+  .oracle-output::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.18); border-radius: 2px; }
 
-  /* ── Oracle text rendering ── */
+  /* ── Oracle text ── */
   .oracle-output-text {
     font-size: 11.5px;
-    line-height: 1.75;
-    color: #8899aa;
+    line-height: 1.8;
+    color: #7a8a9a;
     white-space: pre-wrap;
     word-break: break-word;
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   }
-
   .oracle-output-text .o-h2 {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
     color: #00d4ff;
-    margin: 16px 0 6px;
-    letter-spacing: 1px;
+    margin: 18px 0 7px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
     padding-bottom: 5px;
-    border-bottom: 1px solid rgba(0, 212, 255, 0.15);
-    position: relative;
+    border-bottom: 1px solid rgba(0,212,255,0.12);
+    display: block;
   }
-  .oracle-output-text .o-h2::before {
-    content: '//';
-    color: rgba(0,212,255,0.4);
-    font-size: 10px;
-  }
-
+  .oracle-output-text .o-h2::before { content: '// '; color: rgba(0,212,255,0.35); }
   .oracle-output-text .o-h3 {
     font-size: 10px;
     font-weight: 700;
-    color: #4a9ebb;
-    margin: 12px 0 4px;
+    color: #3a8aaa;
+    margin: 12px 0 5px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: block;
   }
-  .oracle-output-text .o-h3::before {
-    content: '›';
-    color: rgba(0,212,255,0.5);
-  }
-
+  .oracle-output-text .o-h3::before { content: '> '; color: rgba(0,212,255,0.4); }
   .oracle-output-text .o-bullet {
-    padding-left: 18px;
+    padding-left: 16px;
     position: relative;
-    color: #7a8a9a;
+    color: #6a7a8a;
     display: block;
     margin: 3px 0;
   }
@@ -337,39 +269,32 @@ function injectStyles(): void {
     content: '▸';
     position: absolute;
     left: 0;
-    color: rgba(0, 212, 255, 0.5);
-    font-size: 10px;
+    color: rgba(0,212,255,0.45);
+    font-size: 9px;
+    top: 2px;
   }
-
-  .oracle-output-text .o-bold {
-    font-weight: 700;
-    color: #cbd5e1;
-  }
+  .oracle-output-text .o-bold { font-weight: 700; color: #c0cdd8; }
   .oracle-output-text .o-buy {
     color: #4ade80;
     font-weight: 800;
-    text-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+    text-shadow: 0 0 10px rgba(74,222,128,0.5);
     letter-spacing: 0.5px;
   }
   .oracle-output-text .o-sell {
     color: #f87171;
     font-weight: 800;
-    text-shadow: 0 0 8px rgba(248, 113, 113, 0.4);
+    text-shadow: 0 0 10px rgba(248,113,113,0.5);
     letter-spacing: 0.5px;
   }
   .oracle-output-text .o-watch {
     color: #fbbf24;
     font-weight: 800;
-    text-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+    text-shadow: 0 0 10px rgba(251,191,36,0.4);
     letter-spacing: 0.5px;
   }
-  .oracle-output-text .o-num {
-    color: #a78bfa;
-    font-weight: 600;
-    font-family: monospace;
-  }
+  .oracle-output-text .o-num { color: #a78bfa; font-weight: 600; }
 
-  /* Blinking cursor */
+  /* Cursor */
   .oracle-cursor {
     display: inline-block;
     width: 7px;
@@ -379,142 +304,132 @@ function injectStyles(): void {
     vertical-align: text-bottom;
     margin-left: 2px;
     border-radius: 1px;
-    box-shadow: 0 0 6px rgba(0,212,255,0.6);
+    box-shadow: 0 0 8px rgba(0,212,255,0.7);
   }
-  @keyframes oracle-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
+  @keyframes oracle-blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-  /* ── Thinking states ── */
+  /* ── Thinking ── */
   .oracle-thinking-indicator {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 20px 12px;
-    color: #2d4a5a;
+    padding: 24px 14px;
+    color: #2a4050;
     font-size: 11px;
     font-family: monospace;
+    letter-spacing: 0.3px;
   }
   .oracle-thinking-dots span {
     display: inline-block;
     width: 5px; height: 5px;
     border-radius: 50%;
     background: #00d4ff;
-    animation: oracle-dot-bounce 1.2s ease-in-out infinite;
+    animation: oracle-dot 1.2s ease-in-out infinite;
     margin: 0 2px;
-    box-shadow: 0 0 4px rgba(0,212,255,0.5);
+    box-shadow: 0 0 6px rgba(0,212,255,0.6);
   }
   .oracle-thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
   .oracle-thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes oracle-dot-bounce {
-    0%,80%,100% { transform: scale(0.6); opacity: 0.3; }
-    40% { transform: scale(1); opacity: 1; }
-  }
+  @keyframes oracle-dot { 0%,80%,100%{transform:scale(0.5);opacity:0.2} 40%{transform:scale(1);opacity:1} }
 
-  /* ── Free query ── */
+  /* ── Query box ── */
   .oracle-query-box {
     display: flex;
-    gap: 6px;
-    padding: 8px 10px;
-    border-top: 1px solid rgba(0,212,255,0.08);
-    background: rgba(0,0,0,0.3);
+    gap: 7px;
+    padding: 8px 12px;
+    border-top: 1px solid rgba(0,212,255,0.07);
+    background: rgba(0,0,0,0.35);
     align-items: flex-end;
-    position: relative;
-    z-index: 1;
+    flex-shrink: 0;
   }
   .oracle-query-input {
     flex: 1;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.5);
     border: 1px solid rgba(0,212,255,0.1);
     border-radius: 3px;
-    padding: 7px 10px;
+    padding: 8px 11px;
     font-size: 11px;
-    color: #7a9ab5;
+    color: #8aa0b5;
     resize: none;
-    min-height: 32px;
+    min-height: 34px;
     max-height: 80px;
     outline: none;
-    font-family: monospace;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
     line-height: 1.4;
     transition: all 0.2s;
   }
   .oracle-query-input:focus {
-    border-color: rgba(0,212,255,0.4);
+    border-color: rgba(0,212,255,0.35);
     background: rgba(0,212,255,0.03);
     color: #a0b8cc;
-    box-shadow: 0 0 10px rgba(0,212,255,0.05);
+    box-shadow: 0 0 12px rgba(0,212,255,0.06);
   }
-  .oracle-query-input::placeholder { color: #1e3040; font-style: italic; }
+  .oracle-query-input::placeholder { color: #1a2a35; font-style: italic; }
   .oracle-query-send {
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 3px;
     background: rgba(0,212,255,0.08);
-    border: 1px solid rgba(0,212,255,0.25);
+    border: 1px solid rgba(0,212,255,0.22);
     color: #00d4ff;
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     white-space: nowrap;
     align-self: flex-end;
     transition: all 0.2s;
-    height: 32px;
+    height: 34px;
     letter-spacing: 0.3px;
+    font-family: monospace;
   }
   .oracle-query-send:hover {
-    background: rgba(0,212,255,0.15);
-    box-shadow: 0 0 10px rgba(0,212,255,0.2);
-    border-color: rgba(0,212,255,0.5);
+    background: rgba(0,212,255,0.14);
+    box-shadow: 0 0 14px rgba(0,212,255,0.2);
+    border-color: rgba(0,212,255,0.45);
   }
-  .oracle-query-send:disabled { opacity: 0.3; cursor: not-allowed; }
+  .oracle-query-send:disabled { opacity: 0.25; cursor: not-allowed; }
 
   /* ── History ── */
   .oracle-history-toggle {
-    padding: 5px 10px;
+    padding: 5px 12px;
     font-size: 9px;
-    color: #1e3040;
+    color: #1e2a35;
     cursor: pointer;
     text-align: center;
-    border-top: 1px solid rgba(255,255,255,0.03);
+    border-top: 1px solid rgba(255,255,255,0.02);
     background: none;
-    border-left: none;
-    border-right: none;
-    border-bottom: none;
+    border-left: none; border-right: none; border-bottom: none;
     width: 100%;
     transition: color 0.15s;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 700;
     font-family: monospace;
-    position: relative;
-    z-index: 1;
+    flex-shrink: 0;
   }
-  .oracle-history-toggle:hover { color: #4a6a7a; }
-
+  .oracle-history-toggle:hover { color: #3a5a6a; }
   .oracle-history-list {
-    border-top: 1px solid rgba(255,255,255,0.03);
-    max-height: 150px;
+    border-top: 1px solid rgba(255,255,255,0.02);
+    max-height: 140px;
     overflow-y: auto;
-    position: relative;
-    z-index: 1;
+    flex-shrink: 0;
   }
   .oracle-history-item {
-    padding: 6px 10px;
+    padding: 6px 12px;
     border-bottom: 1px solid rgba(255,255,255,0.02);
     cursor: pointer;
-    transition: background 0.1s;
+    transition: background 0.12s;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
   }
   .oracle-history-item:hover { background: rgba(0,212,255,0.04); }
   .oracle-history-zone {
     font-size: 9px;
     padding: 1px 6px;
     border-radius: 2px;
-    background: rgba(0,212,255,0.08);
-    border: 1px solid rgba(0,212,255,0.2);
-    color: #00d4ff;
+    background: rgba(0,212,255,0.07);
+    border: 1px solid rgba(0,212,255,0.18);
+    color: #00a8cc;
     font-weight: 700;
     text-transform: uppercase;
     white-space: nowrap;
@@ -522,54 +437,57 @@ function injectStyles(): void {
   }
   .oracle-history-preview {
     font-size: 10px;
-    color: #2d4a5a;
+    color: #2a3a4a;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     flex: 1;
     font-family: monospace;
   }
-  .oracle-history-time {
-    font-size: 9px;
-    color: #1e3040;
-    white-space: nowrap;
-    font-family: monospace;
-  }
+  .oracle-history-time { font-size: 9px; color: #1a2a32; white-space: nowrap; font-family: monospace; }
 
-  /* ── Error state ── */
+  /* ── Error ── */
   .oracle-error-msg {
-    padding: 12px 14px;
+    padding: 10px 14px;
     font-size: 11px;
     color: #f87171;
     line-height: 1.5;
     display: flex;
     gap: 8px;
-    align-items: flex-start;
     font-family: monospace;
-    background: rgba(248,113,113,0.05);
-    border-left: 2px solid rgba(248,113,113,0.3);
-    margin: 8px;
+    border-left: 2px solid rgba(248,113,113,0.4);
+    margin: 10px;
     border-radius: 0 3px 3px 0;
+    background: rgba(248,113,113,0.04);
   }
-  .oracle-error-msg::before { content: 'ERR'; font-size: 9px; font-weight: 800; padding: 1px 4px; background: rgba(248,113,113,0.15); border-radius: 2px; flex-shrink: 0; margin-top: 1px; }
+  .oracle-error-msg::before {
+    content: 'ERR';
+    font-size: 8px;
+    font-weight: 800;
+    padding: 2px 5px;
+    background: rgba(248,113,113,0.15);
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    letter-spacing: 0.5px;
+  }
 
-  /* ── Idle placeholder ── */
+  /* ── Idle ── */
   .oracle-idle-msg {
-    padding: 24px 16px;
+    padding: 28px 16px;
     text-align: center;
-    color: #1e3040;
+    color: #1e2a35;
     font-size: 11px;
     line-height: 1.7;
     font-family: monospace;
   }
   .oracle-idle-msg strong {
     display: block;
-    color: #2d4a5a;
+    color: #2a3a48;
     font-size: 12px;
-    margin-bottom: 6px;
+    margin-bottom: 7px;
     letter-spacing: 0.5px;
   }
-
   `;
   document.head.appendChild(el);
 }
@@ -693,9 +611,15 @@ export class OraclePanel extends Panel {
     }
 
     this.content.innerHTML = '';
-    this.content.style.display = 'flex';
-    this.content.style.flexDirection = 'column';
-    this.content.style.padding = '0';
+    this.content.className = 'panel-content oracle-panel-content';
+    this.content.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      background: linear-gradient(180deg, #060b14 0%, #050a12 100%);
+      position: relative;
+      overflow: hidden;
+    `;
 
     this.content.appendChild(this.buildZoneTabs());
     this.content.appendChild(this.buildStatusBar());
