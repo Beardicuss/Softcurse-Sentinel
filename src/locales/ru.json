@@ -2424,13 +2424,13 @@
     "copied": "Скопировано!",
     "nextScan": "Следующее сканирование через",
     "zones": {
-      "all": "⚡ Всё",
-      "crypto": "₿ Крипта",
-      "equities": "📈 Акции",
-      "macro": "🌐 Макро",
-      "commodities": "🛢 Сырьё",
-      "supplychain": "⛴ Цепочки поставок",
-      "geopolitical": "🎯 Геополитика"
+      "all": "ВСЁ",
+      "crypto": "КРИПТА",
+      "equities": "АКЦИИ",
+      "macro": "МАКРО",
+      "commodities": "СЫРЬЁ",
+      "supplychain": "ЦЕПОЧКИ",
+      "geopolitical": "ГЕОПОЛИТИКА"
     },
     "settings": {
       "title": "👁 Oracle Финансовая Разведка",

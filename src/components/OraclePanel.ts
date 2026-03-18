@@ -38,7 +38,7 @@ function injectStyles(): void {
   if (document.getElementById(STYLE_ID)) return;
   const el = document.createElement('style');
   el.id = STYLE_ID;
-  el.textContent = `
+  el.innerHTML = `
   /* ── Oracle panel base ── */
   .oracle-panel-content {
     scrollbar-width: thin;
@@ -51,39 +51,66 @@ function injectStyles(): void {
   .oracle-zones {
     display: flex;
     gap: 4px;
-    padding: 8px 10px 7px;
+    padding: 8px 10px;
     flex-wrap: wrap;
-    border-bottom: 1px solid rgba(0,212,255,0.08);
-    background: rgba(0,0,0,0.3);
+    background: #0a0d12;
     flex-shrink: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
+
   .oracle-zone-btn {
-    padding: 4px 12px;
-    border-radius: 3px;
+    padding: 5px 12px;
+    border-radius: 2px;
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.07);
-    background: rgba(255,255,255,0.03);
-    color: #3a4a5a;
+    border: none;
+    background: transparent;
+    color: #4a5a6a;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.12s ease;
     white-space: nowrap;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-family: 'JetBrains Mono', 'Fira Code', Arial, sans-serif;
+    line-height: 1.2;
   }
   .oracle-zone-btn:hover {
-    border-color: rgba(0,212,255,0.45);
-    color: #00d4ff;
-    background: rgba(0,212,255,0.07);
-    box-shadow: 0 0 10px rgba(0,212,255,0.12);
+    color: #c0ccd8;
+    background: rgba(255,255,255,0.05);
   }
-  .oracle-zone-btn.active {
-    background: rgba(0,212,255,0.12);
-    border-color: rgba(0,212,255,0.6);
-    color: #00d4ff;
-    box-shadow: 0 0 14px rgba(0,212,255,0.18), inset 0 0 6px rgba(0,212,255,0.06);
+
+  /* Active states - each zone its own color like Bloomberg ticker */
+  .oracle-zone-btn[data-zone="all"].active {
+    background: #00b8d9;
+    color: #000;
   }
+  .oracle-zone-btn[data-zone="crypto"].active {
+    background: #f59e0b;
+    color: #000;
+  }
+  .oracle-zone-btn[data-zone="equities"].active {
+    background: #22c55e;
+    color: #000;
+  }
+  .oracle-zone-btn[data-zone="macro"].active {
+    background: #3b82f6;
+    color: #fff;
+  }
+  .oracle-zone-btn[data-zone="commodities"].active {
+    background: #f97316;
+    color: #000;
+  }
+  .oracle-zone-btn[data-zone="supplychain"].active {
+    background: #8b5cf6;
+    color: #fff;
+  }
+  .oracle-zone-btn[data-zone="geopolitical"].active {
+    background: #ef4444;
+    color: #fff;
+  }
+
+  .oracle-zone-icon { display: none; }
+  .oracle-zone-label { font-size: 10px; letter-spacing: 0.8px; }
 
   /* ── No-key state ── */
   .oracle-no-key {
@@ -120,7 +147,7 @@ function injectStyles(): void {
     align-items: center;
     justify-content: space-between;
     padding: 5px 12px;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.5);
     border-bottom: 1px solid rgba(255,255,255,0.03);
     font-size: 10px;
     flex-shrink: 0;
@@ -128,23 +155,44 @@ function injectStyles(): void {
   .oracle-status-left { display: flex; align-items: center; gap: 7px; }
   .oracle-provider-pill {
     padding: 2px 8px;
-    border-radius: 2px;
+    border-radius: 10px;
     background: rgba(74,222,128,0.08);
-    border: 1px solid rgba(74,222,128,0.25);
+    border: 1px solid rgba(74,222,128,0.2);
     color: #4ade80;
     font-size: 9px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
     font-family: monospace;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .oracle-provider-pill::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 4px rgba(74,222,128,0.8);
+    animation: oracle-live-pulse 2s ease-in-out infinite;
+  }
+  @keyframes oracle-live-pulse {
+    0%,100% { opacity: 1; box-shadow: 0 0 4px rgba(74,222,128,0.8); }
+    50% { opacity: 0.5; box-shadow: 0 0 2px rgba(74,222,128,0.3); }
   }
   .oracle-provider-pill.no-key {
     background: rgba(251,146,60,0.08);
-    border-color: rgba(251,146,60,0.25);
+    border-color: rgba(251,146,60,0.2);
     color: #fb923c;
   }
+  .oracle-provider-pill.no-key::before {
+    background: #fb923c;
+    box-shadow: 0 0 4px rgba(251,146,60,0.8);
+    animation: none;
+  }
   .oracle-model-label {
-    color: #2a3a4a;
+    color: #1e3040;
     font-size: 9px;
     max-width: 170px;
     overflow: hidden;
@@ -152,67 +200,87 @@ function injectStyles(): void {
     white-space: nowrap;
     font-family: monospace;
   }
-  .oracle-duration { color: #2a3a4a; font-size: 9px; font-family: monospace; }
+  .oracle-duration {
+    color: #2a4050;
+    font-size: 9px;
+    font-family: monospace;
+    padding: 1px 6px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.3);
+  }
 
   /* ── Scan bar ── */
   .oracle-scan-bar {
     display: flex;
-    gap: 7px;
-    padding: 8px 12px;
+    gap: 8px;
+    padding: 9px 12px;
     border-bottom: 1px solid rgba(255,255,255,0.03);
     align-items: center;
-    background: rgba(0,0,0,0.25);
+    background: rgba(0,0,0,0.2);
     flex-shrink: 0;
   }
   .oracle-scan-btn {
-    padding: 7px 18px;
-    border-radius: 3px;
-    background: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(0,153,204,0.08));
+    padding: 7px 20px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,153,204,0.06));
     color: #00d4ff;
     font-size: 11px;
     font-weight: 800;
-    border: 1px solid rgba(0,212,255,0.35);
+    border: 1px solid rgba(0,212,255,0.3);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     white-space: nowrap;
     letter-spacing: 0.5px;
     font-family: monospace;
-    box-shadow: 0 0 12px rgba(0,212,255,0.08);
+    box-shadow: 0 1px 8px rgba(0,212,255,0.06), inset 0 1px 0 rgba(255,255,255,0.04);
+    position: relative;
+    overflow: hidden;
   }
+  .oracle-scan-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.06), transparent);
+    transition: left 0.4s ease;
+  }
+  .oracle-scan-btn:hover:not(:disabled)::before { left: 100%; }
   .oracle-scan-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(0,153,204,0.15));
-    box-shadow: 0 0 22px rgba(0,212,255,0.22);
-    border-color: rgba(0,212,255,0.65);
+    background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(0,153,204,0.12));
+    box-shadow: 0 2px 16px rgba(0,212,255,0.18);
+    border-color: rgba(0,212,255,0.55);
     transform: translateY(-1px);
   }
-  .oracle-scan-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+  .oracle-scan-btn:active:not(:disabled) { transform: translateY(0); }
+  .oracle-scan-btn:disabled { opacity: 0.25; cursor: not-allowed; transform: none; }
   .oracle-scan-btn.scanning {
-    background: rgba(74,222,128,0.07);
+    background: rgba(74,222,128,0.06);
     color: #4ade80;
-    border-color: rgba(74,222,128,0.3);
-    animation: oracle-glow-pulse 2s ease-in-out infinite;
+    border-color: rgba(74,222,128,0.25);
+    animation: oracle-scan-pulse 2s ease-in-out infinite;
   }
-  @keyframes oracle-glow-pulse {
-    0%,100% { box-shadow: 0 0 8px rgba(74,222,128,0.1); }
-    50% { box-shadow: 0 0 22px rgba(74,222,128,0.28); }
+  @keyframes oracle-scan-pulse {
+    0%,100% { box-shadow: 0 0 6px rgba(74,222,128,0.08); }
+    50% { box-shadow: 0 0 20px rgba(74,222,128,0.22); }
   }
   .oracle-abort-btn {
     padding: 6px 12px;
-    border-radius: 3px;
-    background: rgba(248,113,113,0.07);
-    border: 1px solid rgba(248,113,113,0.25);
+    border-radius: 4px;
+    background: rgba(248,113,113,0.06);
+    border: 1px solid rgba(248,113,113,0.2);
     color: #f87171;
     font-size: 10px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.18s;
     font-family: monospace;
   }
-  .oracle-abort-btn:hover { background: rgba(248,113,113,0.14); border-color: rgba(248,113,113,0.5); }
-  .oracle-scan-cooldown { font-size: 9px; color: #1e2a35; font-family: monospace; margin-left: 2px; }
+  .oracle-abort-btn:hover { background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.4); }
+  .oracle-scan-cooldown { font-size: 9px; color: #1a2a35; font-family: monospace; margin-left: 2px; }
 
   /* ── Output area ── */
   .oracle-output {
@@ -494,14 +562,14 @@ function injectStyles(): void {
 
 // ─── Zone definitions ─────────────────────────────────────────────────────────
 
-const ZONES: { id: OracleZone; labelKey: string }[] = [
-  { id: 'all',          labelKey: 'oracle.zones.all' },
-  { id: 'crypto',       labelKey: 'oracle.zones.crypto' },
-  { id: 'equities',     labelKey: 'oracle.zones.equities' },
-  { id: 'macro',        labelKey: 'oracle.zones.macro' },
-  { id: 'commodities',  labelKey: 'oracle.zones.commodities' },
-  { id: 'supplychain',  labelKey: 'oracle.zones.supplychain' },
-  { id: 'geopolitical', labelKey: 'oracle.zones.geopolitical' },
+const ZONES: { id: OracleZone; labelKey: string; icon: string }[] = [
+  { id: 'all',          labelKey: 'oracle.zones.all',          icon: '⚡' },
+  { id: 'crypto',       labelKey: 'oracle.zones.crypto',       icon: '₿' },
+  { id: 'equities',     labelKey: 'oracle.zones.equities',     icon: '📈' },
+  { id: 'macro',        labelKey: 'oracle.zones.macro',        icon: '🌐' },
+  { id: 'commodities',  labelKey: 'oracle.zones.commodities',  icon: '🛢' },
+  { id: 'supplychain',  labelKey: 'oracle.zones.supplychain',  icon: '⛴' },
+  { id: 'geopolitical', labelKey: 'oracle.zones.geopolitical', icon: '🎯' },
 ];
 
 // ─── Text renderer (lightweight markdown → HTML) ──────────────────────────────
@@ -605,6 +673,10 @@ export class OraclePanel extends Panel {
   private renderShell(): void {
     const ready = isOracleProviderReady();
 
+    // Force dark background on the panel element itself (overrides --surface)
+    this.element.style.background = '#070b12';
+    this.element.style.borderColor = 'rgba(0,212,255,0.08)';
+
     if (!ready) {
       this.renderNoKey();
       return;
@@ -612,14 +684,13 @@ export class OraclePanel extends Panel {
 
     this.content.innerHTML = '';
     this.content.className = 'panel-content oracle-panel-content';
-    this.content.style.cssText = `
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-      background: linear-gradient(180deg, #060b14 0%, #050a12 100%);
-      position: relative;
-      overflow: hidden;
-    `;
+    this.content.style.cssText = [
+      'display:flex',
+      'flex-direction:column',
+      'padding:0',
+      'background:#070b12',
+      'overflow:hidden',
+    ].join(';');
 
     this.content.appendChild(this.buildZoneTabs());
     this.content.appendChild(this.buildStatusBar());
@@ -628,6 +699,7 @@ export class OraclePanel extends Panel {
     const output = document.createElement('div');
     output.className = 'oracle-output';
     output.id = 'oracle-output';
+    output.style.cssText = 'flex:1;overflow-y:auto;';
     output.appendChild(this.buildIdlePlaceholder());
     this.content.appendChild(output);
 
@@ -661,7 +733,7 @@ export class OraclePanel extends Panel {
       const btn = document.createElement('button');
       btn.className = `oracle-zone-btn${z.id === this.activeZone ? ' active' : ''}`;
       btn.dataset.zone = z.id;
-      btn.textContent = t(z.labelKey);
+      btn.innerHTML = `<span class="oracle-zone-icon">${z.icon}</span><span class="oracle-zone-label">${t(z.labelKey)}</span>`;
       bar.appendChild(btn);
     }
     return bar;

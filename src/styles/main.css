@@ -18729,3 +18729,53 @@ body.has-breaking-alert .panels-grid {
   70%  { transform: scale(2.5); opacity: 0; }
   100% { transform: scale(2.5); opacity: 0; }
 }
+
+/* ── Oracle Panel overrides ── */
+.panel[data-panel="oracle"] {
+  background: #070b12 !important;
+  border-color: rgba(0, 212, 255, 0.1) !important;
+}
+.panel[data-panel="oracle"] .panel-content {
+  background: #070b12 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+.panel[data-panel="oracle"] .panel-header {
+  background: #0a0e18 !important;
+  border-bottom-color: rgba(0, 212, 255, 0.08) !important;
+}
+/* Oracle zone buttons - Bloomberg style */
+.oracle-zones {
+  display: flex !important;
+  gap: 4px !important;
+  padding: 7px 10px !important;
+  flex-wrap: wrap !important;
+  background: #0a0d12 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+  flex-shrink: 0 !important;
+}
+.oracle-zone-btn {
+  padding: 4px 10px !important;
+  border-radius: 2px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  border: none !important;
+  background: transparent !important;
+  color: #3a4a5a !important;
+  cursor: pointer !important;
+  transition: all 0.12s !important;
+  white-space: nowrap !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+.oracle-zone-btn:hover { color: #8a9aaa !important; }
+.oracle-zone-btn[data-zone="all"].active        { background: #00b8d9 !important; color: #000 !important; }
+.oracle-zone-btn[data-zone="crypto"].active     { background: #f59e0b !important; color: #000 !important; }
+.oracle-zone-btn[data-zone="equities"].active   { background: #22c55e !important; color: #000 !important; }
+.oracle-zone-btn[data-zone="macro"].active      { background: #3b82f6 !important; color: #fff !important; }
+.oracle-zone-btn[data-zone="commodities"].active{ background: #f97316 !important; color: #000 !important; }
+.oracle-zone-btn[data-zone="supplychain"].active{ background: #8b5cf6 !important; color: #fff !important; }
+.oracle-zone-btn[data-zone="geopolitical"].active{ background: #ef4444 !important; color: #fff !important; }

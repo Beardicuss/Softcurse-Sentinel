@@ -58,7 +58,6 @@ import { BETA_MODE } from '@/config/beta';
 import { t } from '@/services/i18n';
 import { getCurrentTheme } from '@/utils';
 import { trackCriticalBannerAction } from '@/services/analytics';
-import { getSecretState } from '@/services/runtime-config';
 
 export interface PanelLayoutCallbacks {
   openCountryStory: (code: string, name: string) => void;
@@ -482,22 +481,8 @@ export class PanelLayoutManager implements AppModule {
 
     this.createPanel('heatmap', () => new HeatmapPanel());
     this.createPanel('markets', () => new MarketPanel());
-    const stockAnalysisPanel = this.createPanel('stock-analysis', () => new StockAnalysisPanel());
-    if (stockAnalysisPanel && !getSecretState('WORLDMONITOR_API_KEY').present) {
-      stockAnalysisPanel.showLocked([
-        'AI stock briefs with technical + news synthesis',
-        'Trend scoring from MA, MACD, RSI, and volume structure',
-        'Actionable watchlist monitoring for your premium workspace',
-      ]);
-    }
-    const stockBacktestPanel = this.createPanel('stock-backtest', () => new StockBacktestPanel());
-    if (stockBacktestPanel && !getSecretState('WORLDMONITOR_API_KEY').present) {
-      stockBacktestPanel.showLocked([
-        'Historical replay of premium stock-analysis signals',
-        'Win-rate, accuracy, and simulated-return metrics',
-        'Recent evaluation samples for your tracked symbols',
-      ]);
-    }
+    this.createPanel('stock-analysis', () => new StockAnalysisPanel());
+    this.createPanel('stock-backtest', () => new StockBacktestPanel());
 
     const monitorPanel = this.createPanel('monitors', () => new MonitorPanel(this.ctx.monitors));
     monitorPanel?.onChanged((monitors) => {

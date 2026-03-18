@@ -2527,13 +2527,13 @@
     "copied": "Copied!",
     "nextScan": "Next free scan in",
     "zones": {
-      "all": "⚡ All",
-      "crypto": "₿ Crypto",
-      "equities": "📈 Equities",
-      "macro": "🌐 Macro",
-      "commodities": "🛢 Commodities",
-      "supplychain": "⛴ Supply Chain",
-      "geopolitical": "🎯 Geopolitical"
+      "all": "ALL",
+      "crypto": "CRYPTO",
+      "equities": "EQUITIES",
+      "macro": "MACRO",
+      "commodities": "COMMODITIES",
+      "supplychain": "SUPPLY CHAIN",
+      "geopolitical": "GEOPOLITICAL"
     },
     "settings": {
       "title": "👁 Oracle Financial Intelligence",

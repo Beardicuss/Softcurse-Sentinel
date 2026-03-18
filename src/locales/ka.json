@@ -1102,13 +1102,13 @@
     "copied": "დაკოპირდა!",
     "nextScan": "შემდეგი სკანირება",
     "zones": {
-      "all": "⚡ ყველა",
-      "crypto": "₿ კრიპტო",
-      "equities": "📈 აქციები",
-      "macro": "🌐 მაკრო",
-      "commodities": "🛢 ნედლეული",
-      "supplychain": "⛴ მიწოდების ჯაჭვი",
-      "geopolitical": "🎯 გეოპოლიტიკა"
+      "all": "ყველა",
+      "crypto": "კრიპტო",
+      "equities": "აქციები",
+      "macro": "მაკრო",
+      "commodities": "ნედლეული",
+      "supplychain": "მიწოდება",
+      "geopolitical": "გეოპოლიტიკა"
     },
     "settings": {
       "title": "👁 Oracle ფინანსური დაზვერვა",
