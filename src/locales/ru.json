@@ -280,7 +280,8 @@
     "gulfEconomies": "Экономика Залива",
     "gulfIndices": "Индексы Залива",
     "gulfCurrencies": "Валюты Залива",
-    "gulfOil": "Нефть Залива"
+    "gulfOil": "Нефть Залива",
+    "oracle": "👁 Oracle"
   },
   "commands": {
     "prefixes": {
@@ -2402,5 +2403,51 @@
   "contextMenu": {
     "openCountryBrief": "Открыть обзор страны",
     "copyCoordinates": "Скопировать координаты"
+  },
+  "oracle": {
+    "title": "👁 Oracle",
+    "subtitle": "Финансовый разведывательный движок",
+    "scanNow": "⚡ Сканировать",
+    "scanning": "⚡ Сканирование…",
+    "thinking": "🧠 Анализирую…",
+    "gathering": "⏳ Сбор данных…",
+    "askOracle": "Спросить Oracle →",
+    "queryPlaceholder": "Спроси Oracle что угодно… например: «Что означает ситуация в Суэце для нефти?»",
+    "idleTitle": "Oracle готов",
+    "idleDesc": "Нажмите «Сканировать» для анализа текущей обстановки по живым данным Sentinel, или задайте конкретный вопрос ниже.",
+    "noKeyTitle": "Oracle требует AI-провайдера",
+    "noKeyDesc": "Настройте бесплатный API-ключ (Groq или OpenRouter) в Настройках для активации финансовой разведки Oracle.",
+    "openSettings": "Открыть Настройки → Oracle AI",
+    "history": "История",
+    "stop": "✕ Стоп",
+    "copy": "Копировать",
+    "copied": "Скопировано!",
+    "nextScan": "Следующее сканирование через",
+    "zones": {
+      "all": "⚡ Всё",
+      "crypto": "₿ Крипта",
+      "equities": "📈 Акции",
+      "macro": "🌐 Макро",
+      "commodities": "🛢 Сырьё",
+      "supplychain": "⛴ Цепочки поставок",
+      "geopolitical": "🎯 Геополитика"
+    },
+    "settings": {
+      "title": "👁 Oracle Финансовая Разведка",
+      "desc": "AI-анализ рынков, крипты, макроэкономики и геополитических сигналов",
+      "freeProviders": "Бесплатные и открытые",
+      "paidProviders": "Платные провайдеры",
+      "apiKey": "API-ключ",
+      "serverUrl": "URL сервера",
+      "model": "Модель",
+      "save": "Сохранить",
+      "saved": "Сохранено",
+      "ready": "● ГОТОВ",
+      "noKey": "⚠ НУЖЕН КЛЮЧ",
+      "off": "ВЫКЛ",
+      "getKey": "Получить ключ",
+      "models": "Модели",
+      "infoNote": "Начни бесплатно: Groq и OpenRouter предлагают щедрые бесплатные тарифы без кредитной карты. Для максимальной мощи Oracle рекомендуется Llama 3.3 70B от Groq — быстрый, бесплатный и мощный."
+    }
   }
 }

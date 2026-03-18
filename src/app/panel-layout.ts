@@ -42,6 +42,7 @@ import {
   EconomicCorrelationPanel,
   DisasterCorrelationPanel,
 } from '@/components';
+import { OraclePanel } from '@/components/OraclePanel';
 import { SatelliteFiresPanel } from '@/components/SatelliteFiresPanel';
 import { focusInvestmentOnMap } from '@/services/investments-focus';
 import { debounce, saveToStorage, loadFromStorage } from '@/utils';
@@ -663,13 +664,12 @@ export class PanelLayoutManager implements AppModule {
       }),
     );
 
-    const _wmKeyPresent = getSecretState('WORLDMONITOR_API_KEY').present;
-    const _lockPanels = this.ctx.isDesktopApp && !_wmKeyPresent;
+    const _lockPanels = false; // Unlocked for all users
 
     this.lazyPanel('daily-market-brief', () =>
       import('@/components/DailyMarketBriefPanel').then(m => new m.DailyMarketBriefPanel()),
       undefined,
-      !_wmKeyPresent ? ['Pre-market watchlist priorities', 'Action plan for the session', 'Risk watch tied to current finance headlines'] : undefined,
+      undefined, // unlocked
     );
 
     this.lazyPanel('forecast', () =>
@@ -743,6 +743,7 @@ export class PanelLayoutManager implements AppModule {
     }
 
     this.createPanel('insights', () => new InsightsPanel());
+    this.createPanel('oracle', () => new OraclePanel());
 
     // Global Giving panel (all variants)
     this.lazyPanel('giving', () =>

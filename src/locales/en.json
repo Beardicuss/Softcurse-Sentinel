@@ -288,7 +288,8 @@
     "gulfIndices": "Gulf Indices",
     "gulfCurrencies": "Gulf Currencies",
     "gulfOil": "Gulf Oil",
-    "airlineIntel": "✈️ Airline Intelligence"
+    "airlineIntel": "✈️ Airline Intelligence",
+    "oracle": "👁 Oracle"
   },
   "commands": {
     "prefixes": {
@@ -2505,5 +2506,51 @@
   "contextMenu": {
     "openCountryBrief": "Open Country Brief",
     "copyCoordinates": "Copy Coordinates"
+  },
+  "oracle": {
+    "title": "👁 Oracle",
+    "subtitle": "Financial Intelligence Engine",
+    "scanNow": "⚡ Scan Now",
+    "scanning": "⚡ Scanning…",
+    "thinking": "🧠 Thinking…",
+    "gathering": "⏳ Gathering data…",
+    "askOracle": "Ask Oracle →",
+    "queryPlaceholder": "Ask Oracle anything… e.g. \"What does the Suez situation mean for oil?\"",
+    "idleTitle": "Oracle is ready",
+    "idleDesc": "Press Scan Now to analyse current market conditions using live Sentinel data, or ask a specific question below.",
+    "noKeyTitle": "Oracle needs an AI provider",
+    "noKeyDesc": "Configure a free API key (Groq or OpenRouter) in Settings to activate Oracle financial intelligence.",
+    "openSettings": "Open Settings → Oracle AI",
+    "history": "History",
+    "stop": "✕ Stop",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "nextScan": "Next free scan in",
+    "zones": {
+      "all": "⚡ All",
+      "crypto": "₿ Crypto",
+      "equities": "📈 Equities",
+      "macro": "🌐 Macro",
+      "commodities": "🛢 Commodities",
+      "supplychain": "⛴ Supply Chain",
+      "geopolitical": "🎯 Geopolitical"
+    },
+    "settings": {
+      "title": "👁 Oracle Financial Intelligence",
+      "desc": "AI-powered analysis across markets, crypto, macro & geopolitical signals",
+      "freeProviders": "Free & Open Source",
+      "paidProviders": "Premium Providers",
+      "apiKey": "API Key",
+      "serverUrl": "Server URL",
+      "model": "Model",
+      "save": "Save Configuration",
+      "saved": "Saved",
+      "ready": "● READY",
+      "noKey": "⚠ KEY NEEDED",
+      "off": "OFF",
+      "getKey": "Get key",
+      "models": "Models",
+      "infoNote": "Start free: Groq and OpenRouter both offer generous free tiers with no credit card required. For maximum Oracle intelligence, Groq's Llama 3.3 70B is recommended — fast, free, and powerful."
+    }
   }
 }

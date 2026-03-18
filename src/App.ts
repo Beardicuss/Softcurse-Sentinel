@@ -42,7 +42,6 @@ import { PanelLayoutManager } from '@/app/panel-layout';
 import { DataLoaderManager } from '@/app/data-loader';
 import { EventHandlerManager } from '@/app/event-handlers';
 import { resolveUserRegion, resolvePreciseUserCoordinates, type PreciseCoordinates } from '@/utils/user-location';
-import { showProBanner } from '@/components/ProBanner';
 import {
   CorrelationEngine,
   militaryAdapter,
@@ -51,6 +50,9 @@ import {
   disasterAdapter,
 } from '@/services/correlation-engine';
 import type { CorrelationPanel } from '@/components/CorrelationPanel';
+import { getOracleAIConfig, isOracleProviderReady, subscribeOracleSettingsChanged } from '@/services/oracle-ai-settings';
+import { oracleEngine } from '@/services/oracle-engine';
+import { setupOraclePersistence, restoreOracleCache } from '@/services/oracle-persistence';
 
 const CYBER_LAYER_ENABLED = import.meta.env.VITE_ENABLE_CYBER_LAYER === 'true';
 
@@ -72,6 +74,7 @@ export class App {
 
   private modules: { destroy(): void }[] = [];
   private unsubAiFlow: (() => void) | null = null;
+  private unsubOracle: (() => void) | null = null;
   private visiblePanelPrimed = new Set<string>();
   private visiblePanelPrimeRaf: number | null = null;
   private readonly handleViewportPrime = (): void => {
@@ -178,6 +181,11 @@ export class App {
 
     if (tasks.length > 0) {
       await Promise.allSettled(tasks);
+    }
+
+    // Oracle: fire initial scan if panel is enabled and provider is configured
+    if (shouldPrime('oracle') && getOracleAIConfig().oracleEnabled && isOracleProviderReady()) {
+      void oracleEngine.scan('all');
     }
   }
 
@@ -535,6 +543,18 @@ export class App {
       }
     });
 
+    // Oracle: react to settings changes — fire initial scan when user enables Oracle
+    this.unsubOracle = subscribeOracleSettingsChanged(() => {
+      const cfg = getOracleAIConfig();
+      if (cfg.oracleEnabled && isOracleProviderReady()) {
+        const state = oracleEngine.getState();
+        const lastTs = state.lastAnalysis?.timestamp?.getTime() ?? 0;
+        if (Date.now() - lastTs > 30 * 60 * 1000) {
+          void oracleEngine.scan('all');
+        }
+      }
+    });
+
     // Check AIS configuration before init
     if (!isAisConfigured()) {
       this.state.mapLayers.ais = false;
@@ -678,6 +698,9 @@ export class App {
     this.eventHandlers.setupSnapshotSaving();
     cleanOldSnapshots().catch((e) => console.warn('[Storage] Snapshot cleanup failed:', e));
 
+    // Oracle: wire persistence and restore last cached analysis
+    void this.initOraclePersistence();
+
     // Phase 8: Update checks
     this.desktopUpdater.init();
 
@@ -687,6 +710,17 @@ export class App {
       panel_count: Object.keys(this.state.panels).length,
     });
     this.eventHandlers.setupPanelViewTracking();
+  }
+
+  private async initOraclePersistence(): Promise<void> {
+    // Wire save-on-complete
+    setupOraclePersistence();
+
+    // Restore last cached analysis so panel shows something immediately
+    const cached = await restoreOracleCache();
+    if (cached && oracleEngine.getState().status === 'idle') {
+      oracleEngine.restoreFromCache(cached);
+    }
   }
 
   public destroy(): void {
@@ -705,6 +739,7 @@ export class App {
 
     // Clean up subscriptions, map, AIS, and breaking news
     this.unsubAiFlow?.();
+    this.unsubOracle?.();
     this.state.breakingBanner?.destroy();
     destroyBreakingNewsAlerts();
     this.state.map?.destroy();
@@ -906,6 +941,18 @@ export class App {
       },
       5 * 60 * 1000,
       () => this.shouldRefreshCorrelation(),
+    );
+
+    // ── Oracle: auto-scan every 30 min when panel is visible and provider ready ──
+    this.refreshScheduler.scheduleRefresh(
+      'oracle',
+      async () => {
+        const cfg = getOracleAIConfig();
+        if (!cfg.oracleEnabled || !isOracleProviderReady()) return;
+        await oracleEngine.scan('all');
+      },
+      30 * 60 * 1000,
+      () => getOracleAIConfig().oracleEnabled && isOracleProviderReady() && this.isPanelNearViewport('oracle'),
     );
   }
 }

@@ -31,6 +31,7 @@ export * from './TechEventsPanel';
 export * from './ServiceStatusPanel';
 export * from './RuntimeConfigPanel';
 export * from './InsightsPanel';
+export * from './OraclePanel';
 export * from './TechReadinessPanel';
 export * from './SatelliteFiresPanel';
 export * from './MacroSignalsPanel';
